@@ -1,17 +1,4 @@
-# [team name] Design Document - HealthMate Service
-
-## Instructions
-
-*Save a copy of this template for your team in the same folder that contains
-this template.*
-
-*Replace italicized text (including this text!) with details of the design you
-are proposing for your team project. (Your replacement text shouldn't be in
-italics)*
-
-*You should take a look at the example design document in the same folder as
-this template for more guidance on the types of information to capture, and the
-level of detail to aim for.*
+# [bd-team-project-priyanka] Design Document :
 
 ## HealthMate Service Design
 
@@ -33,9 +20,6 @@ allowing them to schedule appointments based on their flexibility*
 
 
 ## 2. Top Questions to Resolve in Review
-
-*List the most important questions you have about your design, or things that
-you are still debating internally that you might like help working through.*
 
 1. To solve the problem,I have designed to get the nearby doctors across all 
    the hospitals based on pincode. Should I implement more complicate design 
@@ -67,7 +51,7 @@ U4. *As a user, I can see the appointment details.*
 
 ### 4.2. Out of Scope
 
-* Getting availability of nearby doctors based on GPS location.
+* Getting the availability of nearby doctors based on GPS location.
 
 # 5. Proposed Architecture Overview
 
