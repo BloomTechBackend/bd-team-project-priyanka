@@ -1,0 +1,39 @@
+@startuml
+title Get Availble Doctors based on pincode
+
+actor Client
+participant "API Gateway" as APIGateway
+participant Lambda
+participant GetAppointmentActivity
+participant UserDao
+participant HospitalDao
+participant DoctorAppointmentServiceUtils
+participant ModelConverter
+database DynamoDB
+
+Client -> APIGateway : GET / doctors/pincode?maxDist?department?date
+activate Client
+APIGateway -> Lambda
+activate Lambda
+activate GetDoctorActivity
+activate HospitalDao
+activate UserDao
+Lambda -> GetDoctorActivity :  handleRequest(GetDoctorRequest, Context)
+GetDoctorActivity -> HospitalDao : getNearByDoctor(pincode,date,department)
+HospitalDao -> DynamoDB : load doctors based on pincode
+HospitalDao <- DynamoDB : List<Doctor>
+alt if List<Hospital> is Empty:
+    Lambda <-- HospitalDao : throw NoDoctorPresentException
+    APIGateway <-- Lambda
+    Client <-- APIGateway : 404 Response
+else otherwise, continue
+end
+GetDoctorActivity ->  : getAppointments(userId)
+AppointmentDao -> DynamoDB : load appoinments by userId
+AppointmentDao <- DynamoDB : Appointment
+GetAppointmentActivity <- AppointmentDao : Appointment
+Lambda <- GetAppointmentActivity : Appointment
+APIGateway <- Lambda
+
+
+@enduml

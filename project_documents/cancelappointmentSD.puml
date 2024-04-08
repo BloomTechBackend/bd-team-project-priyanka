@@ -1,0 +1,56 @@
+@startuml
+title Cancel Appointment
+
+actor Client
+participant "API Gateway" as APIGateway
+participant Lambda
+participant CancelAppointmentActivity
+participant UserDao
+participant AppointmentDao
+database DynamoDB
+
+Client -> APIGateway : GET / appoinments/userid
+activate Client
+APIGateway -> Lambda
+activate Lambda
+activate CancelAppointmentActivity
+activate AppointmentDao
+activate UserDao
+Lambda -> CancelAppointmentActivity :  handleRequest(CancelAppointmentRequest, Context)
+CancelAppointmentActivity -> UserDao : getUser(userId)
+UserDao -> DynamoDB : load user by ID
+alt if user ID does not exist
+    UserDao <-- DynamoDB : null
+    Lambda <-- UserDao : throw UserNotFoundException
+    APIGateway <-- Lambda
+    Client <-- APIGateway : 404 Response
+else otherwise, continue
+end
+CancelAppointmentActivity -> AppointmentDao : getAppointmentById(appointmentId)
+AppointmentDao -> DynamoDB : load appointment
+alt if appointment ID does not exist
+    AppointmentDao <-- DynamoDB : null
+    Lambda <-- AppointmentDao : throw AppointmentNotExistException
+    APIGateway <-- Lambda
+    Client <-- APIGateway : 404 Response
+else otherwise, continue
+
+end
+CancelAppointmentActivity <-- AppointmentDao : Appointment
+CancelAppointmentActivity <- CancelAppointmentActivity : validate userId matches with request
+alt if request userId and Appointment userId different
+    Lambda <-- CancelAppointmentActivity : throw InvalidAttributeChangeException
+    APIGateway <-- Lambda
+    Client <-- APIGateway : 400 Response
+else otherwise,continue
+CancelAppointmentActivity -> AppointmentDao : deleteAppointment(appointmentId,userId)
+
+
+AppointmentDao -> DynamoDB
+AppointmentDao <- DynamoDB : 200 response
+CancelAppointmentActivity <- AppointmentDao
+Lambda <- CancelAppointmentActivity
+APIGateway <- Lambda
+
+
+@enduml

@@ -201,6 +201,7 @@ customerId // string
 songCount // number
 tags // stringSet
 songList // list
+role // string
 ```
 
 ### 7.2. `album_tracks`

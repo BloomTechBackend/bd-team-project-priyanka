@@ -1,0 +1,50 @@
+@startuml
+title Register User
+
+actor Client
+participant "API Gateway" as APIGateway
+participant Lambda
+participant CreateUserActivity
+participant UserDao
+database DynamoDB
+
+Client -> APIGateway : POST / createUser
+activate Client
+APIGateway -> Lambda
+activate Lambda
+activate CreateUserActivity
+activate UserServiceUtils
+activate UserDao
+Lambda -> CreateUserActivity:  handleRequest(CreateUserRequest, Context)
+CreateUserActivity -> UserDao : getUserByEmail(email)
+UserDao -> DynamoDB : load user by emailid
+alt if user exist
+    UserDao <-- DynamoDB : User
+    CreateUserActivity <-- UserDao : User
+    Lambda <-- CreateUserActivity : throw EmailAlreadyRegisteredException
+    APIGateway <-- Lambda
+    Client <-- APIGateway : 404 Response
+else otherwise, continue
+end
+CreateUserActivity -> UserServiceUtils : validateEmail(email)
+CreateUserActivity -> UserServiceUtils : validatePassword(pwd)
+alt if email or pwd is Invalid
+    CreateUserActivity <-- UserServiceUtils : throw InvalidInputException
+    Lambda <-- CreateUserActivity
+    APIGateway <-- Lambda
+    Client <-- APIGateway : 404 Response
+else otherwise, continue
+end
+CreateUserActivity -> UserServiceUtils : generateUserId()
+CreateUserActivity <-- UserServiceUtils : new user ID
+
+CreateUserActivity -> CreateUserActivity : populate User object
+CreateUserActivity -> UserDao : saveUser(User)
+UserDao -> DynamoDB : save User
+UserDao <- DynamoDB
+CreateUserActivity <- UserDao : User
+
+
+
+
+@enduml
