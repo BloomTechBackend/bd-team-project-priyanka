@@ -2,38 +2,44 @@
 title Get Availble Doctors based on pincode
 
 actor Client
-participant "API Gateway" as APIGateway
-participant Lambda
-participant GetAppointmentActivity
-participant UserDao
+participant FindNearByDoctorsPage
+participant GetDoctorActivity
 participant HospitalDao
-participant DoctorAppointmentServiceUtils
-participant ModelConverter
+participant DoctorAvailabilityDao
 database DynamoDB
 
-Client -> APIGateway : GET / doctors/pincode?maxDist?department?date
+Client -> FindNearByDoctorsPage : GET / doctors/:pincode/:date/:department
 activate Client
-APIGateway -> Lambda
-activate Lambda
+activate FindNearByDoctorsPage
 activate GetDoctorActivity
 activate HospitalDao
-activate UserDao
-Lambda -> GetDoctorActivity :  handleRequest(GetDoctorRequest, Context)
-GetDoctorActivity -> HospitalDao : getNearByDoctor(pincode,date,department)
-HospitalDao -> DynamoDB : load doctors based on pincode
+FindNearByDoctorsPage -> GetDoctorActivity :  handleRequest(GetDoctorRequest, Context)
+alt if pincode or date or department is not given:
+    FindNearByDoctorsPage <-- GetDoctorActivity : InvalidInputException
+    Client <-- FindNearByDoctorsPage
+else otherwise, continue
+GetDoctorActivity -> HospitalDao : getNearByDoctor(pincode,department)
+
+HospitalDao -> DynamoDB : load doctors based on pincode,department
 HospitalDao <- DynamoDB : List<Doctor>
-alt if List<Hospital> is Empty:
-    Lambda <-- HospitalDao : throw NoDoctorPresentException
-    APIGateway <-- Lambda
-    Client <-- APIGateway : 404 Response
+alt if List<Doctor> is Empty:
+    FindNearByDoctorsPage <-- HospitalDao : throw NoDoctorPresentException
+    Client <-- FindNearByDoctorsPage : 404 Response
 else otherwise, continue
 end
-GetDoctorActivity ->  : getAppointments(userId)
-AppointmentDao -> DynamoDB : load appoinments by userId
-AppointmentDao <- DynamoDB : Appointment
-GetAppointmentActivity <- AppointmentDao : Appointment
-Lambda <- GetAppointmentActivity : Appointment
-APIGateway <- Lambda
+GetDoctorActivity <- HospitalDao : List<Doctor>
+
+activate DoctorAvailabilityDao
+GetDoctorActivity -> DoctorAvailabilityDao : getAvailableDoctors(List<Doctor>,date)
+DoctorAvailabilityDao -> DynamoDB : load doctors who are available on the date
+DoctorAvailabilityDao <- DynamoDB : List<Doctor>
+alt if List<Doctor> is Empty:
+    FindNearByDoctorsPage <-- DoctorAvailabilityDao : throw NoDoctorAvailableOnThisDateException
+    Client <-- FindNearByDoctorsPage : 404 Response
+else otherwise, continue
+end
+GetDoctorActivity <- DoctorAvailabilityDao
+FindNearByDoctorsPage <- GetDoctorActivity
 
 
 @enduml

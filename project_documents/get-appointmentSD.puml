@@ -2,8 +2,7 @@
 title Get Appointments By UserId
 
 actor Client
-participant "API Gateway" as APIGateway
-participant Lambda
+participant ShowAppointmentsPage
 participant GetAppointmentActivity
 participant UserDao
 participant AppointmentDao
@@ -11,29 +10,26 @@ participant DoctorAppointmentServiceUtils
 participant ModelConverter
 database DynamoDB
 
-Client -> APIGateway : GET / appoinments/userid
+Client -> ShowAppointmentsPage : GET / appoinments/userid
 activate Client
-APIGateway -> Lambda
-activate Lambda
+activate ShowAppointmentsPage
 activate GetAppointmentActivity
 activate AppointmentDao
 activate UserDao
-Lambda -> GetAppointmentActivity :  handleRequest(GetAppointmentRequest, Context)
+ShowAppointmentsPage -> GetAppointmentActivity :  handleRequest(GetAppointmentRequest, Context)
 GetAppointmentActivity -> UserDao : getUser(userId)
 UserDao -> DynamoDB : load user by ID
 alt if user ID does not exist
     UserDao <-- DynamoDB : null
-    Lambda <-- UserDao : throw UserNotFoundException
-    APIGateway <-- Lambda
-    Client <-- APIGateway : 404 Response
+    ShowAppointmentsPage <-- UserDao : throw UserNotFoundException
+    Client <-- ShowAppointmentsPage : 404 Response
 else otherwise, continue
 end
 GetAppointmentActivity -> AppointmentDao : getAppointments(userId)
 AppointmentDao -> DynamoDB : load appoinments by userId
 AppointmentDao <- DynamoDB : Appointment
 GetAppointmentActivity <- AppointmentDao : Appointment
-Lambda <- GetAppointmentActivity : Appointment
-APIGateway <- Lambda
+
 
 
 @enduml

@@ -1,4 +1,4 @@
-# [team name] Design Document
+# [team name] Design Document - HealthMate Service
 
 ## Instructions
 
@@ -13,12 +13,23 @@ italics)*
 this template for more guidance on the types of information to capture, and the
 level of detail to aim for.*
 
-## HealthMate Design
+## HealthMate Service Design
 
 ## 1. Problem Statement
 
-*In rural areas, residents face significant challenges when seeking healthcare services, particularly when it comes to booking hospital appointments. Many individuals from rural areas are compelled to travel long distances to urban centers solely for this purpose. This inconvenience arises from a lack of awareness regarding doctor availability and lack
-of information regarding which hospital can provide optimal treatment. As a result, patients often find themselves navigating a confusing and time-consuming process, leading to delays in receiving essential medical attention.*
+*In rural areas, residents face significant challenges when seeking healthcare 
+services, particularly when it comes to booking hospital appointments. Many 
+individuals from rural areas are compelled to travel long distances to urban 
+centers solely for this purpose. This inconvenience arises from a lack of awareness 
+regarding doctor availability and lack of information regarding which hospital 
+can provide optimal treatment. As a result, patients often find themselves 
+navigating a confusing and time-consuming process, leading to delays in receiving 
+essential medical attention.
+
+The design document outlines the HealthMate Service, aimed at providing a list of 
+available doctors for a specified pin code. With this service, users gain the 
+ability to conveniently access doctor availability for specific dates, also 
+allowing them to schedule appointments based on their flexibility*
 
 
 ## 2. Top Questions to Resolve in Review
@@ -26,14 +37,16 @@ of information regarding which hospital can provide optimal treatment. As a resu
 *List the most important questions you have about your design, or things that
 you are still debating internally that you might like help working through.*
 
-1. To solve the problem,I have designed to get the nearby doctors across all the hospitals based on pincode. Should I implement more complicate design to fetch nearby doctors?
-2. To get the availability of doctors,I am dividing a day into 15minute framework. I am storing availability of doctors on day basis in a different table in database. Is there any better way to figure out availability of doctor on a particular date?
+1. To solve the problem,I have designed to get the nearby doctors across all 
+   the hospitals based on pincode. Should I implement more complicate design 
+   to fetch nearby doctors?
+2. To get the availability of doctors,I am dividing a day into 15minute timewindow. 
+   I am storing availability of doctors on day basis in a different table in 
+   database. Is there any better way to figure out availability of doctor on a 
+   particular date?
 
 ## 3. Use Cases
 
-*This is where we work backwards from the customer and define what our customers
-would like to do (and why). You may also include use cases for yourselves, or
-for the organization providing the product to customers.*
 
 U1. *As a user, I can see the availability of doctors on a particular date across all hospitals based on pincode.*
 
@@ -48,7 +61,8 @@ U4. *As a user, I can see the appointment details.*
 
 ### 4.1. In Scope
 
-* Getting the availability of doctors across all hospitals present in a particular pincode.
+* Getting the availability of doctors across all hospitals present in a 
+  particular pincode.
 * Book and cancel an appointment.
 
 ### 4.2. Out of Scope
@@ -57,64 +71,95 @@ U4. *As a user, I can see the appointment details.*
 
 # 5. Proposed Architecture Overview
 
-*Describe broadly how you are proposing to solve for the requirements you
-described in Section 3.*
+*We will use API Gateway and Lambda to create endpoints (`Get Nearby Available Doctors`,
+`Book an Appointment`, `Cancel an appointment`)
+that will handle getting the availability of doctors and based on that to create,
+and cancel appointment to satisfy user requirements.*
 
-*This may include class diagram(s) showing what components you are planning to
-build.*
-
-*You should argue why this architecture (organization of components) is
-reasonable. That is, why it represents a good data flow and a good separation of
-concerns. Where applicable, argue why this architecture satisfies the stated
-requirements.*
+*We will store the hospital details in a table in database.To get doctors, we 
+will store list of doctors present in each department for each hospital.For simpler
+retrieval of doctors availability for a particular date, we will store the 
+availability of doctors in a different table.We will store the appointment details in 
+a different table.*
 
 # 6. API
 
-## 6.1. Public Models
+## 6.1. *Register User*
 
-*Define the data models your service will expose in its responses via your
-*`-Model`* package. These will be equivalent to the *`PlaylistModel`* and
-*`SongModel`* from the Unit 3 project.*
+* Accepts `POST` requests to `createUser/:email/:pwd`
+* email, pwd : Required Parameter
+* Accepts data to create a user account and save the user details in database.
+    * If user already exist, will throw a
+      `EmailAlreadyRegisteredException`
+    * If email or pwd is Invalid, will throw a
+      `InvalidInputException`
+![Client sends form to website Register page.Website Register page sends
+  request to CreateUserActivity.The CreateUserActivity save the user in users
+  database.](images/design_document/registeruserSD.png)
 
 ## 6.2. *Get Nearby Available Doctors*
 
-* Accepts `GET` requests to `/doctors/pincode?department?date`
-* pincode, department, date : Required Parameter
-* Accepts current location pincode and show all the available doctors on the particular date across all hospitals based on pincode.
-    * If no pincode is given, will throw a
+* Accepts `GET` requests to `/doctors/:pincode/:date/:department`
+* pincode, date, department : Required Parameter
+* Accepts pincode, date and show all the available doctors on the particular date across all hospitals based on pincode.
+    * If pincode, date or department is not given, will throw a
       `InvalidInputException`
-## 6.2. *Get Hospital Details by hospital id*
-
-* Accepts `GET` requests to `/hospitals/id
-* id : Required Parameter
-* Accepts the hospital id and show the details of hospitals for the given hospital id.
-    * If no hospital is found, will throw a
-      `NoHospitalFoundException`
+    * If no doctor is present, will throw a
+      `NoDoctorPresentException`
+    * If no doctor is available on the date, will throw a
+      `NoDoctorAvailableOnThisDateException`
+![Client sends  form to Website FindNearByDoctorsPage.Website 
+  FindNearByDoctorsPage sends a request to GetDoctorActivity.
+  GetDoctorActivity send request to hospitals database to get nearby
+  doctors based on pincode and to doctor_availability database to 
+  get the availability of doctors.The database returns the 
+  List of nearby available doctors to GetDoctorActivity. GetDoctorActivity
+  send the same to FindNearByDoctorsPage](images/design_document/get-nearbyDoctors-byAvailabilitySD.png)
 
 ## 6.3 *Book an Appointment*
 
-* Accepts `POST` requests to `/createappointment`
-* Accepts data to create a new appointment with a given userid, doctorid, date.
+* Accepts `POST` requests to `/createappointment/:doctorId/:date/:time`
+* doctorId. date. time : Required Parameter
+* Accepts data to create a new appointment with a given userid, doctorid, date, time.
   Returns a new appointment with unique id.
+   * If doctorId or date or time is not given, will throw a
+     `InvalidInputException`
    * If doctorid is not found, will throw a
      `DoctornotfoundException`
    * If userid is not found, will throw a 
      `Usernotfoundexception`
-## 6.3 *Get Appointment Details*
+![Client submits the create appointment form to the Website Book Appointment page.
+  The website BookAppointment page sends a create appointment request
+  to the CreateAppointmentActivity. The CreateAppointmentActivity save
+  the new appointment in the appointments database.](images/design_document/createappointmentSD.png)
 
-* Accepts `GET` requests to `appointmentid/userid`
-* Accepts appointment id and show the details of appointment for a particular user.
-    * If appointmentid is not found, will throw a
-      `AppointmentnotfoundException`
+## 6.4 *Get Appointment Details*
+
+* Accepts `GET` requests to `appointments/userid`
+* userId : Required Parameter
+* Accepts user id and show the details of appointment for the user.
     * If userid is not found, will throw a
       `Usernotfoundexception`
-## 6.4 *Cancel an appointment*
+![Client visit the ShowAppointmentsPage on website.The website 
+  ShowAppointmentsPage sends a getAppointment request to 
+  getAppointmentActivity.The getAppointmentActivity call the appointments
+  database to load the appointments for the Client.The appointments database
+  returns a List<Appointment> to getAppointmentActivity.Then the website page
+  show list of appointments to the Client.>](images/design_document/get-appointmentSD.png)
 
-* Accepts `DELETE` requests to `/appointment/id`
-* id : Required parameter
-* Accepts id and delete the appointment from database.
-  * If id is not found, will throw a
+## 6.5 *Cancel an appointment*
+
+* Accepts `DELETE` requests to `appointment/:doctorId/:date/:time`
+* doctorId,date,time : Required parameter
+* Accepts data and delete the appointment from database.
+  * If appointment is not found, will throw a
      `AppointmentnotfoundException`
+  * If userId is not found, will throw a
+     `UserNotFoundException`
+    ![Client submits the cancel appointment form to the Website 
+     CancelAppointment page.The website CancelAppointment page sends a 
+     delete appointment request to the CancelAppointmentActivity. The CancelAppointmentActivity
+     delete the appointment from appointments database.](images/design_document/cancelappointmentSD.png)
 
 *(repeat, but you can use shorthand here, indicating what is different, likely
 primarily the data in/out and error conditions. If the sequence diagram is
@@ -126,20 +171,22 @@ the first endpoint)*
 ### 7.1. `users`
 
 ```
-userid // partition key, string
+id // string
+emailid // partition key, string
 firstname // string
 lastname // string
 contact // string
-user status // string
+password // string
 ```
 ### 7.2. `hospitals`
 
 ```
-id // partition key, string
+id // sort key, string
 name // string
-doctorid // string
+address // string
 contact // string
-pincode // string
+pincode // partition key, string
+doctors_present_in_all_department // dict(key:string,value:List<String>)
 ```
 ### 7.3. `doctors`
 
@@ -148,26 +195,23 @@ id // partition key, string
 name // string
 department // string
 contact // string
-availability // string
-hospitalid // string
+about // string
 ```
-### 7.3. `appointments`
+### 7.4. `appointments`
 
 ```
-id // sort key, string
-userid // partotion key, string
-doctorid // string
-appointmentdate // string
+userid // partition key, string
+doctorid:appointmentdate:time // sort key, string
 hospitalid // string
 status // string
+```
+### 7.5. `doctor_availability`
+```
+doctorid // partition key, string
+date //sort key, string
+available_time_slot // List<Object>
 ```
 
 # 8. Pages
 
-*Include mock-ups of the web pages you expect to build. These can be as
-sophisticated as mockups/wireframes using drawing software, or as simple as
-hand-drawn pictures that represent the key customer-facing components of the
-pages. It should be clear what the interactions will be on the page, especially
-where customers enter and submit data. You may want to accompany the mockups
-with some description of behaviors of the page (e.g. “When customer submits the
-submit-dog-photo button, the customer is sent to the doggie detail page”)*
+![](images/design_document/WhatsApp%20Image%202024-04-08%20at%2012.28.44%20PM.jpeg)
