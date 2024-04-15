@@ -1,0 +1,127 @@
+@startuml
+class AddSongToPlaylistActivity {
+    playlistDao : PlaylistDao
+    albumTrackDao : AlbumTrackDao
+    AddSongToPlaylistActivity(PlaylistDao playlistDao, AlbumTrackDao albumTrackDao):
+    log : Logger
+    handleRequest(AddSongToPlaylistRequest addSongToPlaylistRequest, Context context) : AddSongToPlaylistResult
+}
+class CreatePlaylistActivity {
+   playlistDao : PlaylistDao
+   CreatePlaylistActivity(PlaylistDao playlistDao):
+   handleRequest(CreatePlaylistRequest createPlaylistRequest, Context context) : CreatePlaylistResult
+}
+class GetPlaylistActivity {
+   playlistDao : PlaylistDao
+   GetPlaylistActivity(PlaylistDao playlistDao) :
+   handleRequest(GetPlaylistRequest getPlaylistRequest, Context context) : GetPlaylistResult
+}
+class GetPlaylistSongsActivity {
+   playlistDao : PlaylistDao
+   GetPlaylistSongsActivity(PlaylistDao playlistDao) :
+   handleRequest(GetPlaylistSongsRequest getPlaylistSongsRequest, Context context) : GetPlaylistSongsResult
+}
+class UpdatePlaylistActivity {
+   playlistDao : PlaylistDao
+   UpdatePlaylistActivity(PlaylistDao playlistDao) :
+   handleRequest(UpdatePlaylistRequest updatePlaylistRequest, Context context) : UpdatePlaylistResult
+}
+class AddSongToPlaylistRequest {
+   id : String
+   asin : String
+   trackNumber : int
+   queueNext : boolean
+   AddSongToPlaylistRequest() :
+   AddSongToPlaylistRequest(String id, String asin, int trackNumber, boolean queueNext) :
+}
+class CreatePlaylistRequest {
+   name : String
+   customerId : String
+   tags : List<String>
+   CreatePlaylistRequest(String name, String customerId, List<String> tags) :
+   CreatePlaylistRequest():
+}
+class GetPlaylistRequest {
+  id : String
+  GetPlaylistRequest():
+
+}
+class GetPlaylistSongsRequest {
+  id : String
+  order : SongOrder
+  GetPlaylistSongsRequest():
+  GetPlaylistSongsRequest(String id, SongOrder order) :
+}
+class UpdatePlaylistRequest {
+  id : String
+  name : String
+  customerId : String
+  UpdatePlaylistRequest() :
+  UpdatePlaylistRequest(String id, String name, String customerId) :
+}
+class AlbumTrackDao {
+   dynamoDbMapper : DynamoDBMapper
+   AlbumTrackDao(DynamoDBMapper dynamoDbMapper) :
+}
+class PlaylistDao {
+   dynamoDbMapper : DynamoDBMapper
+   PlaylistDao(DynamoDBMapper dynamoDbMapper) :
+   getPlaylist(String id) : Playlist
+}
+class AlbumTrack {
+   @DynamoDBHashKey asin: String
+   @DynamoDBRangeKey trackNumber : Integer
+   albumName : String
+   songTitle : String
+}
+class Playlist {
+   @DynamoDBHashKey id :  String
+   name : String
+   customerId : String
+   songCount : Integer
+   tags : Set<String>
+   songList : List<AlbumTrack>
+   getId() : String
+   setId(String id) :
+   getSongList() : List<AlbumTrack>
+   setSongList(List<AlbumTrack> songList) :
+}
+class AlbumTrackNotFoundException {
+   AlbumTrackNotFoundException()
+}
+class InvalidAttributeValueException {
+   InvalidAttributeValueException()
+}
+class InvalidAttributeChangeException {
+   InvalidAttributeChangeException()
+}
+class PlaylistNotFoundException {
+   PlaylistNotFoundException()
+}
+class InvalidAttributeException {
+   InvalidAttributeException()
+}
+class RuntimeException {
+   RuntimeException()
+}
+interface RequestHandler<I,O> {
+   handleRequest(I input, Context context) : O
+}
+AlbumTrackNotFoundException --|> RuntimeException
+InvalidAttributeValueException --|> InvalidAttributeException
+InvalidAttributeChangeException --|> InvalidAttributeException
+PlaylistNotFoundException --|> RuntimeException
+AddSongToPlaylistActivity --> RequestHandler
+CreatePlaylistActivity --> RequestHandler
+GetPlaylistSongsActivity --> RequestHandler
+GetPlaylistActivity --> RequestHandler
+UpdatePlaylistActivity --> RequestHandler
+Playlist *-- AlbumTrack
+AddSongToPlaylistActivity o-- PlaylistDao
+AddSongToPlaylistActivity o-- AlbumTrackDao
+CreatePlaylistActivity o-- PlaylistDao
+GetPlaylistActivity o-- PlaylistDao
+GetPlaylistSongsActivity o-- PlaylistDao
+UpdatePlaylistActivity o-- PlaylistDao
+
+@enduml

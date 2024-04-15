@@ -1,0 +1,17 @@
+{
+  "firstName": "sarah",
+  "lastName": "sung",
+  "contact": "2065552345",
+  "licenseNumber" : "SD1023",
+  "about": "Sarah Sung, MD is a Dermatologist in Seattle, WA. Sarah Sung was board certified by the American Board of Dermatology.",
+  "department": "Dermatology",
+  "email": "sarahsung@gmail.com",
+  "schedule": {
+    "MONDAY": [
+      {
+        "startTime": "09:00:00",
+        "endTime": "12:00:00"
+      }
+    ]
+  }
+}

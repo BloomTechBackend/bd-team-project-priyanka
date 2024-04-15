@@ -8,3 +8,8 @@
  */
 
 rootProject.name = 'UnitProject'
+//added by me
+include 'LibrariesAndUtilities:LessonPlanResources'
+include 'LibrariesAndUtilities:ATACurriculumTctIntrospection'
+include 'LibrariesAndUtilities:ATACurriculumTestInfrastructure'
+include 'LibrariesAndUtilities:ATAIntegrationTestInfrastructure'
