@@ -47,18 +47,16 @@ public class GetDoctorAvailability {
         }
         return availableSlotOfDoctors;
     }
-    public void updateAvailability(Appointment appointment) {
+    public void updateAvailability(Appointment appointment,Availability oldStatus, Availability newStatus) {
         Doctor doctor = doctorDao.getDoctor(appointment.getDoctorId());
         String appointmentTime = appointment.getAppointmentTime();
         String[] dateTime = appointmentTime.split("#");
         List<Availability> availabilities = doctor.getAvailableSlot().get(new LocalDateMapper(dateTime[0]));
         int startTime =LocalTime.parse(dateTime[1]).getSecond()/900;
-        if (availabilities.get(startTime) == Availability.BOOKED) {
-            availabilities.set(startTime,Availability.NOT_AVAILABLE);
+        if (availabilities.get(startTime) == oldStatus) {
+            availabilities.set(startTime,newStatus);
+            doctorDao.save(doctor);
         }
-
-
-
 
     }
 }

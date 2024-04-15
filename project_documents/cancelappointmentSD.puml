@@ -23,9 +23,9 @@ alt if user ID does not exist
     Client <-- CancelAppointmentPage : 404 Response
 else otherwise, continue
 end
-CancelAppointmentActivity -> AppointmentDao : getAppointmentByDoctorId(doctorId,date,time)
+CancelAppointmentActivity -> AppointmentDao : getAppointment(userId,date,time)
 AppointmentDao -> DynamoDB : load appointment
-alt if doctorId:date:time does not exist
+alt if appointment does not exist
     AppointmentDao <-- DynamoDB : null
     CancelAppointmentPage <-- AppointmentDao : throw AppointmentNotExistException
     Client <-- CancelAppointmentPage : 404 Response
