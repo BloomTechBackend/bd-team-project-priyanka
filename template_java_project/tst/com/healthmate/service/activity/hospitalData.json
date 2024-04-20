@@ -1,0 +1,35 @@
+{
+  "hospitals": [
+    {
+      "hospitalId": "123TOX",
+      "pincode": "98122",
+      "name": "Swedish Health Services",
+      "address": "747 Broadway Seattle",
+      "contact": "206-225-4563",
+      "doctorsInDept": {
+        "Pediatric Neurology": [
+          "SK1029",
+          "SD1029"
+        ],
+        "Dermatology": [
+          "SD1023"
+        ]
+      }
+    },
+    {
+      "hospitalId": "124GOX",
+      "pincode": "98122",
+      "name": "Kaiser Permanente Central Hospital",
+      "address": "201 16th Ave E Seattle",
+      "contact": "206-225-4567",
+      "doctorsInDept": {
+        "Neurology": [
+          "SD1024"
+        ],
+        "Cardiology": [
+          "SJ1029"
+        ]
+      }
+    }
+  ]
+}

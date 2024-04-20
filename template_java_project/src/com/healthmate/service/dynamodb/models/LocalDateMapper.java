@@ -38,4 +38,9 @@ public class LocalDateMapper {
     public int hashCode() {
         return Objects.hash(getDate());
     }
+
+    @Override
+    public String toString() {
+        return date;
+    }
 }

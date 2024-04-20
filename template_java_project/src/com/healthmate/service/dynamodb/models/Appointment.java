@@ -4,17 +4,16 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-import org.joda.time.DateTime;
 
 @DynamoDBTable(tableName = "appointments")
 public class Appointment {
     private String email;
     private String doctorId;
     private String hospitalId;
-    private String appointmentTime;  //(appointmentDate/time)Eg:2024-04-08/10:15:00
+    private String appointmentTime;  //Format:(appointmentDate#time)Eg:2024-04-08#10:15:00
     private String status;
     @DynamoDBHashKey(attributeName = "user_id")
-    public String getEmail() {
+    public String getUserId() {
         return email;
     }
 

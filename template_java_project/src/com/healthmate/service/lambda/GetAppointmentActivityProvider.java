@@ -6,15 +6,16 @@ import com.healthmate.service.dependency.DaggerServiceComponent;
 import com.healthmate.service.dependency.ServiceComponent;
 import com.healthmate.service.dynamodb.models.Appointment;
 import com.healthmate.service.models.requests.GetAppointmentRequest;
+import com.healthmate.service.models.response.GetAppointmentResponse;
 
 import java.util.List;
 
-public class GetAppointmentActivityProvider implements RequestHandler<GetAppointmentRequest, List<Appointment>> {
+public class GetAppointmentActivityProvider implements RequestHandler<GetAppointmentRequest, GetAppointmentResponse> {
     public GetAppointmentActivityProvider() {
     }
 
     @Override
-    public List<Appointment> handleRequest(final GetAppointmentRequest getAppointmentRequest, Context context) {
+    public GetAppointmentResponse handleRequest(final GetAppointmentRequest getAppointmentRequest, Context context) {
         return getServiceComponent().provideGetAppointmentActivity().handleRequest(getAppointmentRequest, context);
     }
 

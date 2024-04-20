@@ -15,5 +15,4 @@ public class LocalDateTimeMapper {
     public LocalDate getLocalDate() {
         return LocalDate.parse(date);
     }
-    public
 }

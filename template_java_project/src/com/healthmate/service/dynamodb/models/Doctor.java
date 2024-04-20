@@ -3,6 +3,9 @@ package com.healthmate.service.dynamodb.models;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
+import com.healthmate.service.converter.AvailableSlotConverter;
+import com.healthmate.service.converter.ScheduleConverter;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -79,6 +82,7 @@ public class Doctor {
         this.about = about;
     }
     @DynamoDBAttribute(attributeName = "schedule")
+    @DynamoDBTypeConverted(converter = ScheduleConverter.class)
     public Map<Day, List<TimeRange>> getSchedule() {
         return schedule;
     }
@@ -86,6 +90,7 @@ public class Doctor {
         this.schedule = availableSlot;
     }
     @DynamoDBAttribute(attributeName = "available_slot")
+    @DynamoDBTypeConverted(converter = AvailableSlotConverter.class)
     public Map<LocalDateMapper,List<Availability>> getAvailableSlot() {
         return availableSlot;
     }

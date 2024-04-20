@@ -7,6 +7,7 @@ import com.healthmate.service.dynamodb.models.Doctor;
 import com.healthmate.service.dynamodb.models.LocalDateMapper;
 import com.healthmate.service.dynamodb.models.LocalDateTimeMapper;
 import com.healthmate.service.dynamodb.models.TimeRange;
+import com.healthmate.service.exceptions.InvalidAttributeValueException;
 import lombok.Data;
 
 import javax.inject.Inject;
@@ -52,7 +53,10 @@ public class GetDoctorAvailability {
         String appointmentTime = appointment.getAppointmentTime();
         String[] dateTime = appointmentTime.split("#");
         List<Availability> availabilities = doctor.getAvailableSlot().get(new LocalDateMapper(dateTime[0]));
-        int startTime =LocalTime.parse(dateTime[1]).getSecond()/900;
+        int startTime =LocalTime.parse(dateTime[1]).toSecondOfDay()/900;
+        if (availabilities.get(startTime) != oldStatus) {
+            throw new InvalidAttributeValueException("Doctor is not available at this time.");
+        }
         if (availabilities.get(startTime) == oldStatus) {
             availabilities.set(startTime,newStatus);
             doctorDao.save(doctor);

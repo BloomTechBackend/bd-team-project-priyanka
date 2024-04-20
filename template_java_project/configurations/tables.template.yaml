@@ -13,25 +13,58 @@ Resources:
           KeyType: "HASH"
       BillingMode: "PAY_PER_REQUEST"
       TableName: "users"
+
   DoctorsTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
-        - AttributeName: "license_number"
+        -
+          AttributeName: "license_number"
           AttributeType: "S"
       KeySchema:
-        - AttributeName: "license_number"
+        -
+          AttributeName: "license_number"
           KeyType: "HASH"
       BillingMode: "PAY_PER_REQUEST"
       TableName: "doctors"
+
   HospitalsTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
-        - AttributeName: "hospital_id"
+        -
+          AttributeName: "hospital_id"
+          AttributeType: "S"
+        -
+          AttributeName: "pincode"
           AttributeType: "S"
       KeySchema:
-        - AttributeName: "hospital_id"
+        -
+          AttributeName: "pincode"
           KeyType: "HASH"
+        -
+          AttributeName: "hospital_id"
+          KeyType: "RANGE"
+
       BillingMode: "PAY_PER_REQUEST"
       TableName: "hospitals"
+
+  AppointmentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: "user_id"
+          AttributeType: "S"
+        -
+          AttributeName: "appointment_time"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "user_id"
+          KeyType: "HASH"
+        -
+          AttributeName: "appointment_time"
+          KeyType: "RANGE"
+      BillingMode: "PAY_PER_REQUEST"
+      TableName: "appointments"

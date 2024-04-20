@@ -1,4 +1,6 @@
 {
+  "doctors" :[
+{
   "firstName": "sarah",
   "lastName": "sung",
   "contact": "2065552345",
@@ -14,4 +16,103 @@
       }
     ]
   }
+},
+{
+  "firstName": "Derek",
+  "lastName": "Yu",
+  "contact": "2065552346",
+  "licenseNumber" : "SD1024",
+  "about": "Derek Yu, MD is a Neurologist in Seattle, WA. Derek Yu was board certified by the American Board of of Psychiatry and Neurology, Neurology.",
+  "department": "Neurology",
+  "email": "derekyu@gmail.com",
+  "schedule": {
+    "MONDAY": [
+      {
+        "startTime": "10:00:00",
+        "endTime": "13:00:00"
+      },
+      {
+        "startTime": "04:00:00",
+        "endTime" : "06:00:00"
+      }
+    ],
+    "TUESDAY" : [
+      {
+        "startTime": "08:00:00",
+        "endTime": "11:00:00"
+      }
+    ]
+  }
+},
+    {
+      "firstName": "Anthony",
+      "lastName": "Bouldin",
+      "contact": "2065552350",
+      "licenseNumber" : "SD1029",
+      "about": "Fellowship in Pediatric Neurology University of Washington,550 17th Avenue, Suite 540 Seattle, WA 98122",
+      "department": "Pediatric Neurology",
+      "email": "anthonyu@gmail.com",
+      "schedule": {
+        "FRIDAY": [
+          {
+            "startTime": "14:00:00",
+            "endTime": "16:00:00"
+          }
+        ],
+        "THURSDAY" : [
+          {
+            "startTime": "06:00:00",
+            "endTime": "08:00:00"
+          }
+        ]
+      }
+    },
+    {
+      "firstName": "Ednia",
+      "lastName": "Simon",
+      "contact": "2065552380",
+      "licenseNumber" : "SK1029",
+      "about": "Clinical Neurophysiology, University of Washington,550 17th Avenue, Suite 540 Seattle, WA 98122",
+      "department": "Pediatric Neurology",
+      "email": "edinsimon@gmail.com",
+      "schedule": {
+        "WEDNESDAY": [
+          {
+            "startTime": "14:00:00",
+            "endTime": "16:00:00"
+          }
+        ],
+        "THURSDAY" : [
+          {
+            "startTime": "08:00:00",
+            "endTime": "10:00:00"
+          }
+        ]
+      }
+    },
+    {
+      "firstName": "David",
+      "lastName": "Lam",
+      "contact": "2065552390",
+      "licenseNumber" : "SJ1029",
+      "about": "Certifying Board of Nuclear Cardiology, Cardiology, Nuclear",
+      "department": "Cardiology",
+      "email": "david@gmail.com",
+      "schedule": {
+        "WEDNESDAY": [
+          {
+            "startTime": "10:00:00",
+            "endTime": "12:00:00"
+          }
+        ],
+        "SATURDAY" : [
+          {
+            "startTime": "15:00:00",
+            "endTime": "18:00:00"
+          }
+        ]
+      }
+    },
+
+
 }

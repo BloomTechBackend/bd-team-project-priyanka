@@ -11,6 +11,7 @@ import com.healthmate.service.models.requests.GetDoctorRequest;
 import com.healthmate.service.models.response.DoctorDetails;
 import com.healthmate.service.models.response.GetDoctorResponse;
 import com.healthmate.service.util.DoctorServiceUtils;
+import com.healthmate.service.util.JwtUtils;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -28,14 +29,18 @@ public class GetNearByDoctorActivity implements RequestHandler<GetDoctorRequest,
     }
     @Override
     public GetDoctorResponse handleRequest(final GetDoctorRequest getDoctorRequest, Context context) {
+        if(!JwtUtils.validateToken(getDoctorRequest.getToken())) {
+            throw new IllegalArgumentException("Invalid User Credentials.Please Login");
+        }
         if (!DoctorServiceUtils.isValidRequest(getDoctorRequest)) {
             throw new InvalidAttributeValueException("All fields are mandatory");
         }
         List<Hospital> hospitals = hospitalDao.getHospitalByPincode(getDoctorRequest.getPincode());
         List<String> nearByDoctorsId = new ArrayList<>();
         for (Hospital hospital:hospitals) {
-            if (hospital.getDoctorInDept().containsKey(getDoctorRequest.getDepartment())) {
-                List<String> doctorIds = hospital.getDoctorInDept().get(getDoctorRequest.getDepartment());
+
+            if (hospital.getDoctorsInDept().containsKey(getDoctorRequest.getDepartment())) {
+                List<String> doctorIds = hospital.getDoctorsInDept().get(getDoctorRequest.getDepartment());
                 for (String id:doctorIds) {
                     nearByDoctorsId.add(id);
                 }

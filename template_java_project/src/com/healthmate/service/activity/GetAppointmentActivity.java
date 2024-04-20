@@ -3,31 +3,25 @@ package com.healthmate.service.activity;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.healthmate.service.dynamodb.AppointmentDao;
-import com.healthmate.service.dynamodb.UserDao;
-import com.healthmate.service.dynamodb.models.Appointment;
-import com.healthmate.service.dynamodb.models.User;
-import com.healthmate.service.exceptions.UserNotFoundException;
 import com.healthmate.service.models.requests.GetAppointmentRequest;
 import com.healthmate.service.models.response.GetAppointmentResponse;
+import com.healthmate.service.util.JwtUtils;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class GetAppointmentActivity implements RequestHandler<GetAppointmentRequest, GetAppointmentResponse> {
-    private UserDao userDao;
     private AppointmentDao appointmentDao;
     @Inject
-    public GetAppointmentActivity(UserDao userDao, AppointmentDao appointmentDao) {
-        this.userDao = userDao;
+    public GetAppointmentActivity(AppointmentDao appointmentDao) {
         this.appointmentDao = appointmentDao;
     }
     @Override
     public GetAppointmentResponse handleRequest(final GetAppointmentRequest getAppointmentRequest, Context context) {
-        User user = userDao.getUser(getAppointmentRequest.getEmail());
-        if (user == null) {
-            throw new UserNotFoundException();
+        if(!JwtUtils.validateToken(getAppointmentRequest.getToken())) {
+            throw new IllegalArgumentException("Invalid User Credentials.Please Login");
         }
-        return new GetAppointmentResponse(getAppointmentRequest.getEmail(),appointmentDao.getAppointmentsByUser(user.getUserId()));
+        String email = JwtUtils.extractEmail(getAppointmentRequest.getToken());
+        return new GetAppointmentResponse(email,appointmentDao.getAppointmentsByUser(email));
 
     }
 

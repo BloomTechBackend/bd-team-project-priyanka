@@ -7,15 +7,16 @@ import com.healthmate.service.dependency.DaggerServiceComponent;
 import com.healthmate.service.dependency.ServiceComponent;
 import com.healthmate.service.dynamodb.models.Appointment;
 import com.healthmate.service.models.requests.CancelAppointmentRequest;
+import com.healthmate.service.models.response.CancelAppointmentResponse;
 
 import java.util.List;
 
-public class CancelAppointmentActivityProvider implements RequestHandler<CancelAppointmentRequest, List<Appointment>> {
+public class CancelAppointmentActivityProvider implements RequestHandler<CancelAppointmentRequest, CancelAppointmentResponse> {
     public CancelAppointmentActivityProvider() {
     }
 
     @Override
-    public List<Appointment> handleRequest(final CancelAppointmentRequest cancelAppointmentRequest, Context context) {
+    public CancelAppointmentResponse handleRequest(final CancelAppointmentRequest cancelAppointmentRequest, Context context) {
         return getServiceComponent().provideCancelAppointmentActivity().handleRequest(cancelAppointmentRequest, context);
     }
 

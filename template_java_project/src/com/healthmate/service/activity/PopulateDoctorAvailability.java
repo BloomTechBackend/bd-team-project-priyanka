@@ -29,11 +29,12 @@ public class PopulateDoctorAvailability  {
                 List<TimeRange> availableTime = doctor.getSchedule().get(day);
                 if(availableTime != null) {
                     for (TimeRange range : availableTime) {
-                        int startTime = range.getLocalStartTime().toSecondOfDay() / 60;
-                        int endTime = range.getLocalEndTime().toSecondOfDay() / 60;
+                        int startTime = range.toLocalStartTime().toSecondOfDay() / 60;
+                        int endTime = range.toLocalEndTime().toSecondOfDay() / 60;
                         for (int start = startTime / 15; start <= endTime / 15; start++) {
-
-                            slots.set(start, Availability.AVAILABLE);
+                            if ((start*15)+15 <= endTime) {
+                                slots.set(start, Availability.AVAILABLE);
+                            }
                         }
                     }
                 }

@@ -4,6 +4,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
+import com.healthmate.service.converter.DoctorsInDeptConverter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +44,8 @@ public class Hospital {
         this.address = address;
     }
     @DynamoDBAttribute(attributeName = "doctors_in_dept")
-    public Map<String, List<String>> getDoctorInDept() {
+    @DynamoDBTypeConverted(converter = DoctorsInDeptConverter.class)
+    public Map<String, List<String>> getDoctorsInDept() {
         return doctorsInDept;
     }
     public void setDoctorsInDept(Map<String,List<String>> doctorsInDept) {

@@ -28,15 +28,15 @@ public class TimeRange {
         this.endTime = endTime;
     }
 
-    public LocalTime getLocalStartTime() {
+    public LocalTime toLocalStartTime() {
         return LocalTime.parse(startTime);
     }
-    public LocalTime getLocalEndTime() {
+    public LocalTime toLocalEndTime() {
         return LocalTime.parse(endTime);
     }
 
     public boolean isTimeWithinRange(Integer secondsOfDay) {
-        return getLocalEndTime().toSecondOfDay() >= secondsOfDay && getLocalStartTime().toSecondOfDay() <= secondsOfDay;
+        return toLocalEndTime().toSecondOfDay() >= secondsOfDay && toLocalStartTime().toSecondOfDay() <= secondsOfDay;
     }
 
 }

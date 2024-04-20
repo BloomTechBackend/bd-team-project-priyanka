@@ -53,12 +53,19 @@ dependencies {
     implementation project('LibrariesAndUtilities:ATACurriculumTestInfrastructure')
     implementation 'com.google.code.gson:gson:2.8.8'
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '0.11.0'
-
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.2'
 // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.12.5'
+//    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-gson', version: '0.2'
+
+//    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+//    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
+//    runtimeOnly 'io.jsonwebtoken:jjwt-gson:0.12.5'
+
+    // https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt
+//    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '2.10.1'
 
     //end
 
@@ -83,6 +90,11 @@ dependencies {
     //added by me
     implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.1'
     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.14.1'
+//    implementation "jakarta.xml.bind:jakarta.xml.bind-api:4.0.2"
+    //implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
+    // https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+//    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.11'
+
 
 
 }

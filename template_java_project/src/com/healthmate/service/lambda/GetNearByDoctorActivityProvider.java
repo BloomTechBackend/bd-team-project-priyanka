@@ -6,16 +6,17 @@ import com.healthmate.service.dependency.DaggerServiceComponent;
 import com.healthmate.service.dependency.ServiceComponent;
 import com.healthmate.service.dynamodb.models.TimeRange;
 import com.healthmate.service.models.requests.GetDoctorRequest;
+import com.healthmate.service.models.response.GetDoctorResponse;
 
 import java.util.List;
 import java.util.Map;
 
-public class GetNearByDoctorActivityProvider implements RequestHandler<GetDoctorRequest, Map<String,List<TimeRange>>> {
+public class GetNearByDoctorActivityProvider implements RequestHandler<GetDoctorRequest, GetDoctorResponse> {
     public GetNearByDoctorActivityProvider() {
     }
 
     @Override
-    public Map<String,List<TimeRange>> handleRequest(final GetDoctorRequest getDoctorRequest, Context context) {
+    public GetDoctorResponse handleRequest(final GetDoctorRequest getDoctorRequest, Context context) {
         return getServiceComponent().provideGetNearByDoctorActivity().handleRequest(getDoctorRequest, context);
     }
 
