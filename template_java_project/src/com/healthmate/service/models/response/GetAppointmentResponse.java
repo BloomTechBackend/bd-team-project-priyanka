@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class GetAppointmentResponse {
     private String email;
-    private List<Appointment> appointmentList;
+    private List<AppointmentDetails> appointmentList;
 }

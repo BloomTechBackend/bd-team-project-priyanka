@@ -113,6 +113,23 @@
         ]
       }
     },
+    {
+      "firstName": "Dee",
+      "lastName": "Knell",
+      "contact": "2065552390",
+      "licenseNumber": "RS1025",
+      "about": "Dee Knell, MD is a Pediatric Neurologist in Seattle, WA. Dee Knell was board certified by the American Board of Pediaric.",
+      "department": "Pediatric Neurology",
+      "email": "deeknell@gmail.com",
+      "schedule": {
+        "THURSDAY": [
+          {
+            "startTime": "09:00:00",
+            "endTime": "12:00:00"
+          }
+        ]
+      }
+    },
 
 
 }

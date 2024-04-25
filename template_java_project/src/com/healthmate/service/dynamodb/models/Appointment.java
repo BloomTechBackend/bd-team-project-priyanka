@@ -4,14 +4,17 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
+import com.healthmate.service.converter.AppointmentStatusConverter;
 
 @DynamoDBTable(tableName = "appointments")
 public class Appointment {
     private String email;
     private String doctorId;
     private String hospitalId;
-    private String appointmentTime;  //Format:(appointmentDate#time)Eg:2024-04-08#10:15:00
-    private String status;
+    private String pincode;
+    private String appointmentTime;  //Format:(appointmentDate#time#bookingTime)Eg:2024-04-08#10:15:00#time when appointment was created
+    private AppointmentStatus status;
     @DynamoDBHashKey(attributeName = "user_id")
     public String getUserId() {
         return email;
@@ -46,13 +49,20 @@ public class Appointment {
         this.appointmentTime = time;
     }
     @DynamoDBAttribute
-    public String getStatus() {
+    @DynamoDBTypeConverted(converter = AppointmentStatusConverter.class)
+    public AppointmentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AppointmentStatus status) {
         this.status = status;
     }
+    @DynamoDBAttribute
+    public String getPincode() {
+        return pincode;
+    }
 
-
+    public void setPincode(String pincode) {
+        this.pincode = pincode;
+    }
 }

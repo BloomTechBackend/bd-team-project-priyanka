@@ -5,6 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.healthmate.service.dynamodb.AppointmentDao;
 import com.healthmate.service.dynamodb.UserDao;
 import com.healthmate.service.dynamodb.models.Appointment;
+import com.healthmate.service.dynamodb.models.AppointmentStatus;
 import com.healthmate.service.dynamodb.models.Availability;
 import com.healthmate.service.dynamodb.models.User;
 import com.healthmate.service.exceptions.InvalidAttributeException;
@@ -31,12 +32,14 @@ public class CancelAppointmentActivity implements RequestHandler<CancelAppointme
             throw new IllegalArgumentException("Invalid User Credentials.Please Login");
         }
         String email = JwtUtils.extractEmail(cancelAppointmentRequest.getToken());
-        Appointment appointment = appointmentDao.getAppointment(email, cancelAppointmentRequest.getAppointmentTime());
+        String appointmentTime = cancelAppointmentRequest.getAppointmentDate()+"#"+cancelAppointmentRequest.getAppointmentTime()+"#"+cancelAppointmentRequest.getBookingTime();
+        Appointment appointment = appointmentDao.getAppointment(email, appointmentTime);
         if (appointment == null) {
             throw new InvalidAttributeException("Appointment does not exist");
         }
         getDoctorAvailability.updateAvailability(appointment, Availability.BOOKED, Availability.AVAILABLE);
-        appointmentDao.deleteAppointment(appointment);
+        appointment.setStatus(AppointmentStatus.CANCELLED);
+        appointmentDao.saveAppointment(appointment);
 
         return new CancelAppointmentResponse("Appointment got cancelled successfully");
 

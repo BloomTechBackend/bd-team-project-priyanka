@@ -16,5 +16,7 @@ import org.joda.time.DateTime;
 @Builder
 public class CancelAppointmentRequest {
     private String token;
-    private String appointmentTime; //format(date#time)
+    private String appointmentTime;
+    private String appointmentDate;
+    private String bookingTime;
 }

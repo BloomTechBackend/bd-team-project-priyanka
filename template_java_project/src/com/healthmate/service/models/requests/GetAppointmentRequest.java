@@ -11,5 +11,4 @@ import org.joda.time.DateTime;
 @Builder
 public class GetAppointmentRequest {
     private String token;
-    private String appointmentTime;
 }

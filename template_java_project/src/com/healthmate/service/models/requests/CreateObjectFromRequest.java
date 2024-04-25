@@ -21,7 +21,7 @@ public class CreateObjectFromRequest {
         hospital.setAddress(registerHospitalRequest.getAddress());
         hospital.setContact(registerHospitalRequest.getContact());
         hospital.setHospitalId(registerHospitalRequest.getHospitalId());
-        hospital.setAddress(registerHospitalRequest.getAddress());
+        hospital.setName(registerHospitalRequest.getName());
         hospital.setDoctorsInDept(registerHospitalRequest.getDoctorsInDept());
         hospital.setPincode(registerHospitalRequest.getPincode());
         return hospital;

@@ -5,6 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.healthmate.service.dynamodb.AppointmentDao;
 import com.healthmate.service.dynamodb.UserDao;
 import com.healthmate.service.dynamodb.models.Appointment;
+import com.healthmate.service.dynamodb.models.AppointmentStatus;
 import com.healthmate.service.dynamodb.models.Availability;
 import com.healthmate.service.dynamodb.models.Doctor;
 import com.healthmate.service.dynamodb.models.User;
@@ -18,6 +19,8 @@ import com.healthmate.service.models.response.CreateAppointmentResponse;
 import com.healthmate.service.util.JwtUtils;
 
 import javax.inject.Inject;
+import java.time.LocalTime;
+import java.util.Date;
 
 public class CreateAppointmentActivity implements RequestHandler<CreateAppointmentRequest, CreateAppointmentResponse> {
     private AppointmentDao appointmentDao;
@@ -43,9 +46,11 @@ public class CreateAppointmentActivity implements RequestHandler<CreateAppointme
         Appointment appointment1 = new Appointment();
         appointment1.setDoctorId(doctor.getDoctorId());
         appointment1.setUserId(JwtUtils.extractEmail(createAppointmentRequest.getToken()));
-        appointment1.setAppointmentTime(createAppointmentRequest.getAppointmentTime());
+        appointment1.setHospitalId(createAppointmentRequest.getHospitalId());
+        appointment1.setAppointmentTime(createAppointmentRequest.getApppointmentDate()+"#"+createAppointmentRequest.getAppointmentTime()+"#"+new Date().toString());
         getDoctorAvailability.updateAvailability(appointment1, Availability.AVAILABLE, Availability.BOOKED);
-
+        appointment1.setStatus(AppointmentStatus.CONFIRMED);
+        appointment1.setPincode(createAppointmentRequest.getPincode());
         appointmentDao.saveAppointment(appointment1);
 
         return new CreateAppointmentResponse("Appointment got created successfully");

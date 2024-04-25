@@ -15,6 +15,7 @@ import com.healthmate.service.util.JwtUtils;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,21 +37,44 @@ public class GetNearByDoctorActivity implements RequestHandler<GetDoctorRequest,
             throw new InvalidAttributeValueException("All fields are mandatory");
         }
         List<Hospital> hospitals = hospitalDao.getHospitalByPincode(getDoctorRequest.getPincode());
-        List<String> nearByDoctorsId = new ArrayList<>();
+        //List<String> nearByDoctorsId = new ArrayList<>();
+//        for (Hospital hospital:hospitals) {
+//
+//            if (hospital.getDoctorsInDept().containsKey(getDoctorRequest.getDepartment())) {
+//                List<String> doctorIds = hospital.getDoctorsInDept().get(getDoctorRequest.getDepartment());
+//                for (String id:doctorIds) {
+//                    nearByDoctorsId.add(id);
+//                }
+//            }
+//        }
+        Map<Hospital,List<String>> nearByDoctors = new HashMap<>();
         for (Hospital hospital:hospitals) {
-
             if (hospital.getDoctorsInDept().containsKey(getDoctorRequest.getDepartment())) {
                 List<String> doctorIds = hospital.getDoctorsInDept().get(getDoctorRequest.getDepartment());
-                for (String id:doctorIds) {
-                    nearByDoctorsId.add(id);
-                }
+                nearByDoctors.put(hospital,doctorIds);
             }
+
+
         }
-        Map<String,List<TimeRange>> nearByAvailableDoctors = getDoctorAvailability.getAvailableDoctors(getDoctorRequest.getDate(),nearByDoctorsId);
         List<DoctorDetails> doctorDetails = new ArrayList<>();
-        for (String s:nearByAvailableDoctors.keySet()) {
-            Doctor doctor = getDoctorAvailability.getDoctorDao().getDoctor(s);
-            doctorDetails.add(new DoctorDetails(s, doctor.getFirstName(), doctor.getLastName(), doctor.getDepartment(), doctor.getAbout(), nearByAvailableDoctors.get(s)));
+        for(Hospital hospital:nearByDoctors.keySet()) {
+            Map<String, List<TimeRange>> nearByAvailableDoctors = getDoctorAvailability.getAvailableDoctors(getDoctorRequest.getDate(), nearByDoctors.get(hospital));
+
+            for (String s : nearByAvailableDoctors.keySet()) {
+                Doctor doctor = getDoctorAvailability.getDoctorDao().getDoctor(s);
+                doctorDetails.add(DoctorDetails.builder()
+                                .firstName(doctor.getFirstName())
+                                .lastName(doctor.getLastName())
+                                .about(doctor.getAbout())
+                                .hospitalName(hospital.getName())
+                                .hospitalAddress(hospital.getAddress())
+                                .pincode(hospital.getPincode())
+                                .availableSlots(nearByAvailableDoctors.get(s))
+                                .licenseNumber(doctor.getDoctorId())
+                                .department(doctor.getDepartment())
+                                .hospitalId(hospital.getHospitalId())
+                        .build());
+            }
         }
         return new GetDoctorResponse(doctorDetails);
     }

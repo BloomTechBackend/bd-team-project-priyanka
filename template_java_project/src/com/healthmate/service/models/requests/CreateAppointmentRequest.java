@@ -11,7 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CreateAppointmentRequest {
     private String doctorId;
-    private String appointmentTime; //date#time
+    private String hospitalId;
+    private String pincode;
+    private String appointmentTime;
+    private String apppointmentDate;
+
     private String token;
 
 

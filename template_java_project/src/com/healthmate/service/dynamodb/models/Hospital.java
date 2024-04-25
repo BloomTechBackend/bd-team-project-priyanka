@@ -6,12 +6,14 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.healthmate.service.converter.DoctorsInDeptConverter;
+import lombok.EqualsAndHashCode;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @DynamoDBTable(tableName = "hospitals")
+@EqualsAndHashCode
 public class Hospital {
     private String hospitalId;
     private String name;
@@ -67,4 +69,5 @@ public class Hospital {
     public void setPincode(String pincode) {
         this.pincode = pincode;
     }
+
 }

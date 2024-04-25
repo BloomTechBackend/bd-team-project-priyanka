@@ -25,7 +25,7 @@ public class AppointmentDao {
         Map<String, AttributeValue> eav = new HashMap<>();
         eav.put(":val1", new AttributeValue().withS(email));
         DynamoDBQueryExpression<Appointment> queryExpression = new DynamoDBQueryExpression<Appointment>()
-                .withKeyConditionExpression("email = :val1")
+                .withKeyConditionExpression("user_id = :val1")
                 .withExpressionAttributeValues(eav);
         List<Appointment> appointments = dynamoDBMapper.query(Appointment.class, queryExpression);
         return appointments;

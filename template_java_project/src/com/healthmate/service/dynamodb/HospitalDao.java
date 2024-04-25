@@ -26,6 +26,10 @@ public class HospitalDao {
         List<Hospital> hospitals = dynamoDBMapper.query(Hospital.class, queryExpression);
         return hospitals;
     }
+
+    public Hospital get(String pincode, String hospitalId) {
+        return dynamoDBMapper.load(Hospital.class, pincode, hospitalId);
+    }
     public Hospital save(Hospital hospital) {
         dynamoDBMapper.save(hospital);
         return hospital;
